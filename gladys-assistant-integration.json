@@ -1,0 +1,586 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "Cloudflare Tunnel Monitor",
+  "description": {
+    "en": "Monitor your Cloudflare tunnels: status, connections, alerts and scenes.",
+    "fr": "Surveillez vos tunnels Cloudflare : état, connexions, alertes et scènes.",
+    "de": "Überwache deine Cloudflare-Tunnel: Status, Verbindungen, Alarme und Szenen.",
+    "es": "Supervise sus túneles de Cloudflare: estado, conexiones, alertas y escenas."
+  },
+  "version": "0.0.0",
+  "docker_image": "ghcr.io/prohand/gladys-cloudflaretunnelmonitor:0.0.0",
+  "gladys_version": ">=5.1.0",
+  "cover_image": "https://raw.githubusercontent.com/prohand/gladys-cloudflaretunnelmonitor/main/cover.png",
+  "categories": ["network", "security"],
+  "transports": ["local", "cloud"],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "Getting started",
+        "fr": "Pour commencer",
+        "de": "Erste Schritte",
+        "es": "Primeros pasos"
+      },
+      "description": {
+        "en": "Two sources, use one or both. Cloud: a Cloudflare API token with the permission Account › Cloudflare Tunnel › Read, and your account ID — every tunnel of the account becomes a device. Local: the metrics address of a cloudflared connector on your network (started with --metrics 0.0.0.0:2000) — it keeps answering when the Internet link is down.",
+        "fr": "Deux sources, utilisez-en une ou les deux. Cloud : un jeton d'API Cloudflare avec la permission Compte › Cloudflare Tunnel › Lecture, et votre ID de compte — chaque tunnel du compte devient un appareil. Local : l'adresse metrics d'un connecteur cloudflared de votre réseau (lancé avec --metrics 0.0.0.0:2000) — elle répond même quand le lien Internet est coupé.",
+        "de": "Zwei Quellen, nutze eine oder beide. Cloud: ein Cloudflare-API-Token mit der Berechtigung Konto › Cloudflare Tunnel › Lesen und deine Konto-ID — jeder Tunnel des Kontos wird zu einem Gerät. Lokal: die Metrics-Adresse eines cloudflared-Connectors in deinem Netzwerk (gestartet mit --metrics 0.0.0.0:2000) — sie antwortet auch, wenn die Internetverbindung ausfällt.",
+        "es": "Dos fuentes, use una o las dos. Nube: un token de API de Cloudflare con el permiso Cuenta › Cloudflare Tunnel › Lectura, y su ID de cuenta — cada túnel de la cuenta se convierte en un dispositivo. Local: la dirección de métricas de un conector cloudflared de su red (iniciado con --metrics 0.0.0.0:2000) — sigue respondiendo cuando falla la conexión a Internet."
+      },
+      "links": [
+        {
+          "url": "https://dash.cloudflare.com/profile/api-tokens",
+          "label": {
+            "en": "Create an API token",
+            "fr": "Créer un jeton d'API",
+            "de": "API-Token erstellen",
+            "es": "Crear un token de API"
+          }
+        },
+        {
+          "url": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/monitor-tunnels/metrics/",
+          "label": {
+            "en": "cloudflared metrics",
+            "fr": "Métriques cloudflared",
+            "de": "cloudflared-Metriken",
+            "es": "Métricas de cloudflared"
+          }
+        },
+        {
+          "url": "https://github.com/prohand/gladys-cloudflaretunnelmonitor/blob/main/docs/en.md",
+          "label": {
+            "en": "Integration documentation",
+            "fr": "Documentation de l'intégration",
+            "de": "Dokumentation der Integration",
+            "es": "Documentación de la integración"
+          }
+        }
+      ]
+    },
+    {
+      "key": "api_token",
+      "type": "secret",
+      "label": {
+        "en": "Cloudflare API token",
+        "fr": "Jeton d'API Cloudflare",
+        "de": "Cloudflare-API-Token",
+        "es": "Token de API de Cloudflare"
+      },
+      "description": {
+        "en": "Read-only token: Account › Cloudflare Tunnel › Read. Leave empty to use local connectors only.",
+        "fr": "Jeton en lecture seule : Compte › Cloudflare Tunnel › Lecture. Laissez vide pour n'utiliser que les connecteurs locaux.",
+        "de": "Nur-Lese-Token: Konto › Cloudflare Tunnel › Lesen. Leer lassen, um nur lokale Connectoren zu nutzen.",
+        "es": "Token de solo lectura: Cuenta › Cloudflare Tunnel › Lectura. Déjelo vacío para usar solo conectores locales."
+      },
+      "required": false
+    },
+    {
+      "key": "account_id",
+      "type": "string",
+      "label": {
+        "en": "Cloudflare account ID",
+        "fr": "ID de compte Cloudflare",
+        "de": "Cloudflare-Konto-ID",
+        "es": "ID de cuenta de Cloudflare"
+      },
+      "description": {
+        "en": "32 hexadecimal characters, shown on the Overview page of the Cloudflare dashboard.",
+        "fr": "32 caractères hexadécimaux, affichés sur la page Vue d'ensemble du tableau de bord Cloudflare.",
+        "de": "32 Hexadezimalzeichen, angezeigt auf der Seite Übersicht im Cloudflare-Dashboard.",
+        "es": "32 caracteres hexadecimales, visibles en la página Resumen del panel de Cloudflare."
+      },
+      "placeholder": {
+        "en": "e.g. 0123456789abcdef0123456789abcdef",
+        "fr": "ex. 0123456789abcdef0123456789abcdef",
+        "de": "z. B. 0123456789abcdef0123456789abcdef",
+        "es": "p. ej. 0123456789abcdef0123456789abcdef"
+      },
+      "required": false,
+      "default": ""
+    },
+    {
+      "key": "local_connectors",
+      "type": "string",
+      "label": {
+        "en": "Local cloudflared connectors",
+        "fr": "Connecteurs cloudflared locaux",
+        "de": "Lokale cloudflared-Connectoren",
+        "es": "Conectores cloudflared locales"
+      },
+      "description": {
+        "en": "Metrics addresses of your cloudflared instances, separated by commas. Leave empty to use the Cloudflare API only.",
+        "fr": "Adresses metrics de vos instances cloudflared, séparées par des virgules. Laissez vide pour n'utiliser que l'API Cloudflare.",
+        "de": "Metrics-Adressen deiner cloudflared-Instanzen, durch Kommas getrennt. Leer lassen, um nur die Cloudflare-API zu nutzen.",
+        "es": "Direcciones de métricas de sus instancias cloudflared, separadas por comas. Déjelo vacío para usar solo la API de Cloudflare."
+      },
+      "placeholder": {
+        "en": "e.g. http://192.168.1.10:2000",
+        "fr": "ex. http://192.168.1.10:2000",
+        "de": "z. B. http://192.168.1.10:2000",
+        "es": "p. ej. http://192.168.1.10:2000"
+      },
+      "required": false,
+      "default": ""
+    },
+    {
+      "key": "poll_frequency",
+      "type": "number",
+      "label": {
+        "en": "Check interval (s)",
+        "fr": "Intervalle de vérification (s)",
+        "de": "Prüfintervall (s)",
+        "es": "Intervalo de comprobación (s)"
+      },
+      "description": {
+        "en": "Seconds between two checks of every tunnel and connector (30 to 3600).",
+        "fr": "Secondes entre deux vérifications de tous les tunnels et connecteurs (30 à 3600).",
+        "de": "Sekunden zwischen zwei Prüfungen aller Tunnel und Connectoren (30 bis 3600).",
+        "es": "Segundos entre dos comprobaciones de todos los túneles y conectores (30 a 3600)."
+      },
+      "required": false,
+      "default": 60,
+      "min": 30,
+      "max": 3600
+    }
+  ],
+  "actions": [
+    {
+      "key": "test_connection",
+      "label": {
+        "en": "Test the connection",
+        "fr": "Tester la connexion",
+        "de": "Verbindung testen",
+        "es": "Probar la conexión"
+      },
+      "timeout_seconds": 45
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "tunnel_status_changed",
+      "label": {
+        "en": "A Cloudflare tunnel changes status",
+        "fr": "Un tunnel Cloudflare change d'état",
+        "de": "Ein Cloudflare-Tunnel ändert seinen Status",
+        "es": "Un túnel de Cloudflare cambia de estado"
+      },
+      "description": {
+        "en": "Fired once per change: a tunnel goes down, comes back, or loses part of its connections.",
+        "fr": "Déclenché une fois par changement : un tunnel tombe, revient, ou perd une partie de ses connexions.",
+        "de": "Einmal pro Änderung ausgelöst: Ein Tunnel fällt aus, kommt zurück oder verliert einen Teil seiner Verbindungen.",
+        "es": "Se activa una vez por cambio: un túnel cae, vuelve o pierde parte de sus conexiones."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "Tunnel", "fr": "Tunnel", "de": "Tunnel", "es": "Túnel" }
+        },
+        {
+          "key": "status",
+          "type": "multi_select",
+          "label": {
+            "en": "New status",
+            "fr": "Nouvel état",
+            "de": "Neuer Status",
+            "es": "Nuevo estado"
+          },
+          "options": [
+            {
+              "value": "healthy",
+              "label": { "en": "Healthy", "fr": "Sain", "de": "Fehlerfrei", "es": "Correcto" }
+            },
+            {
+              "value": "degraded",
+              "label": {
+                "en": "Degraded",
+                "fr": "Dégradé",
+                "de": "Beeinträchtigt",
+                "es": "Degradado"
+              }
+            },
+            {
+              "value": "down",
+              "label": { "en": "Down", "fr": "Hors ligne", "de": "Ausgefallen", "es": "Caído" }
+            },
+            {
+              "value": "inactive",
+              "label": { "en": "Inactive", "fr": "Inactif", "de": "Inaktiv", "es": "Inactivo" }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "tunnel_name",
+          "type": "string",
+          "label": {
+            "en": "Tunnel name",
+            "fr": "Nom du tunnel",
+            "de": "Tunnelname",
+            "es": "Nombre del túnel"
+          }
+        },
+        {
+          "key": "status",
+          "type": "string",
+          "label": {
+            "en": "New status",
+            "fr": "Nouvel état",
+            "de": "Neuer Status",
+            "es": "Nuevo estado"
+          }
+        },
+        {
+          "key": "previous_status",
+          "type": "string",
+          "label": {
+            "en": "Previous status",
+            "fr": "État précédent",
+            "de": "Vorheriger Status",
+            "es": "Estado anterior"
+          }
+        },
+        {
+          "key": "connections",
+          "type": "number",
+          "label": {
+            "en": "Active connections",
+            "fr": "Connexions actives",
+            "de": "Aktive Verbindungen",
+            "es": "Conexiones activas"
+          }
+        }
+      ]
+    },
+    {
+      "key": "connector_status_changed",
+      "label": {
+        "en": "A local cloudflared connector changes status",
+        "fr": "Un connecteur cloudflared local change d'état",
+        "de": "Ein lokaler cloudflared-Connector ändert seinen Status",
+        "es": "Un conector cloudflared local cambia de estado"
+      },
+      "description": {
+        "en": "Fired once per change of a connector watched on your network: ready, not ready, unreachable.",
+        "fr": "Déclenché une fois par changement d'un connecteur surveillé sur votre réseau : prêt, non prêt, injoignable.",
+        "de": "Einmal pro Änderung eines in deinem Netzwerk überwachten Connectors ausgelöst: bereit, nicht bereit, nicht erreichbar.",
+        "es": "Se activa una vez por cambio de un conector vigilado en su red: listo, no listo, inaccesible."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "Connector", "fr": "Connecteur", "de": "Connector", "es": "Conector" }
+        },
+        {
+          "key": "status",
+          "type": "multi_select",
+          "label": {
+            "en": "New status",
+            "fr": "Nouvel état",
+            "de": "Neuer Status",
+            "es": "Nuevo estado"
+          },
+          "options": [
+            {
+              "value": "ready",
+              "label": { "en": "Ready", "fr": "Prêt", "de": "Bereit", "es": "Listo" }
+            },
+            {
+              "value": "not_ready",
+              "label": {
+                "en": "Not ready",
+                "fr": "Non prêt",
+                "de": "Nicht bereit",
+                "es": "No listo"
+              }
+            },
+            {
+              "value": "unreachable",
+              "label": {
+                "en": "Unreachable",
+                "fr": "Injoignable",
+                "de": "Nicht erreichbar",
+                "es": "Inaccesible"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "connector",
+          "type": "string",
+          "label": {
+            "en": "Connector address",
+            "fr": "Adresse du connecteur",
+            "de": "Connector-Adresse",
+            "es": "Dirección del conector"
+          }
+        },
+        {
+          "key": "status",
+          "type": "string",
+          "label": {
+            "en": "New status",
+            "fr": "Nouvel état",
+            "de": "Neuer Status",
+            "es": "Nuevo estado"
+          }
+        },
+        {
+          "key": "previous_status",
+          "type": "string",
+          "label": {
+            "en": "Previous status",
+            "fr": "État précédent",
+            "de": "Vorheriger Status",
+            "es": "Estado anterior"
+          }
+        },
+        {
+          "key": "ready_connections",
+          "type": "number",
+          "label": {
+            "en": "Ready connections",
+            "fr": "Connexions prêtes",
+            "de": "Bereite Verbindungen",
+            "es": "Conexiones listas"
+          }
+        }
+      ]
+    },
+    {
+      "key": "cloudflare_api_error",
+      "label": {
+        "en": "The Cloudflare API stops answering",
+        "fr": "L'API Cloudflare ne répond plus",
+        "de": "Die Cloudflare-API antwortet nicht mehr",
+        "es": "La API de Cloudflare deja de responder"
+      },
+      "description": {
+        "en": "Fired once when the API starts failing (token refused, no Internet…), not at every check.",
+        "fr": "Déclenché une fois quand l'API commence à échouer (jeton refusé, pas d'Internet…), pas à chaque vérification.",
+        "de": "Einmal ausgelöst, wenn die API zu versagen beginnt (Token abgelehnt, kein Internet…), nicht bei jeder Prüfung.",
+        "es": "Se activa una vez cuando la API empieza a fallar (token rechazado, sin Internet…), no en cada comprobación."
+      },
+      "fields": [
+        {
+          "key": "reason",
+          "type": "multi_select",
+          "label": { "en": "Reason", "fr": "Raison", "de": "Grund", "es": "Motivo" },
+          "options": [
+            {
+              "value": "auth",
+              "label": {
+                "en": "Token refused",
+                "fr": "Jeton refusé",
+                "de": "Token abgelehnt",
+                "es": "Token rechazado"
+              }
+            },
+            {
+              "value": "account",
+              "label": {
+                "en": "Unknown account",
+                "fr": "Compte inconnu",
+                "de": "Unbekanntes Konto",
+                "es": "Cuenta desconocida"
+              }
+            },
+            {
+              "value": "rate_limit",
+              "label": {
+                "en": "Too many requests",
+                "fr": "Trop de requêtes",
+                "de": "Zu viele Anfragen",
+                "es": "Demasiadas solicitudes"
+              }
+            },
+            {
+              "value": "unavailable",
+              "label": {
+                "en": "Cloudflare unavailable",
+                "fr": "Cloudflare indisponible",
+                "de": "Cloudflare nicht verfügbar",
+                "es": "Cloudflare no disponible"
+              }
+            },
+            {
+              "value": "network",
+              "label": {
+                "en": "No Internet access",
+                "fr": "Pas d'accès Internet",
+                "de": "Kein Internetzugang",
+                "es": "Sin acceso a Internet"
+              }
+            },
+            {
+              "value": "invalid",
+              "label": {
+                "en": "Unexpected answer",
+                "fr": "Réponse inattendue",
+                "de": "Unerwartete Antwort",
+                "es": "Respuesta inesperada"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "reason",
+          "type": "string",
+          "label": { "en": "Reason", "fr": "Raison", "de": "Grund", "es": "Motivo" }
+        },
+        {
+          "key": "message",
+          "type": "string",
+          "label": {
+            "en": "Message (English)",
+            "fr": "Message (anglais)",
+            "de": "Meldung (Englisch)",
+            "es": "Mensaje (inglés)"
+          }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "check_tunnels",
+      "label": {
+        "en": "Check the Cloudflare tunnels now",
+        "fr": "Vérifier les tunnels Cloudflare maintenant",
+        "de": "Cloudflare-Tunnel jetzt prüfen",
+        "es": "Comprobar los túneles de Cloudflare ahora"
+      },
+      "description": {
+        "en": "Runs a check at once and gives the counts, for the next actions to test.",
+        "fr": "Lance une vérification immédiate et donne les compteurs, à tester dans les actions suivantes.",
+        "de": "Startet sofort eine Prüfung und liefert die Zähler für die folgenden Aktionen.",
+        "es": "Lanza una comprobación inmediata y da los contadores, para las acciones siguientes."
+      },
+      "timeout_seconds": 45,
+      "outputs": [
+        {
+          "key": "total",
+          "type": "number",
+          "label": { "en": "Tunnels", "fr": "Tunnels", "de": "Tunnel", "es": "Túneles" }
+        },
+        {
+          "key": "healthy",
+          "type": "number",
+          "label": {
+            "en": "Healthy tunnels",
+            "fr": "Tunnels sains",
+            "de": "Fehlerfreie Tunnel",
+            "es": "Túneles correctos"
+          }
+        },
+        {
+          "key": "unhealthy",
+          "type": "number",
+          "label": {
+            "en": "Tunnels with an issue",
+            "fr": "Tunnels en anomalie",
+            "de": "Tunnel mit Problem",
+            "es": "Túneles con problemas"
+          }
+        },
+        {
+          "key": "all_healthy",
+          "type": "boolean",
+          "label": {
+            "en": "All tunnels healthy",
+            "fr": "Tous les tunnels sains",
+            "de": "Alle Tunnel fehlerfrei",
+            "es": "Todos los túneles correctos"
+          }
+        }
+      ]
+    },
+    {
+      "key": "get_tunnel_status",
+      "label": {
+        "en": "Read the status of a tunnel",
+        "fr": "Lire l'état d'un tunnel",
+        "de": "Status eines Tunnels lesen",
+        "es": "Leer el estado de un túnel"
+      },
+      "description": {
+        "en": "Gives the last known status of a tunnel or a local connector.",
+        "fr": "Donne le dernier état connu d'un tunnel ou d'un connecteur local.",
+        "de": "Liefert den zuletzt bekannten Status eines Tunnels oder lokalen Connectors.",
+        "es": "Da el último estado conocido de un túnel o de un conector local."
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Tunnel or connector",
+            "fr": "Tunnel ou connecteur",
+            "de": "Tunnel oder Connector",
+            "es": "Túnel o conector"
+          },
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "key": "name",
+          "type": "string",
+          "label": { "en": "Name", "fr": "Nom", "de": "Name", "es": "Nombre" }
+        },
+        {
+          "key": "status",
+          "type": "string",
+          "label": { "en": "Status", "fr": "État", "de": "Status", "es": "Estado" }
+        },
+        {
+          "key": "online",
+          "type": "boolean",
+          "label": { "en": "Online", "fr": "En ligne", "de": "Online", "es": "En línea" }
+        },
+        {
+          "key": "connections",
+          "type": "number",
+          "label": {
+            "en": "Active connections",
+            "fr": "Connexions actives",
+            "de": "Aktive Verbindungen",
+            "es": "Conexiones activas"
+          }
+        }
+      ]
+    }
+  ],
+  "widgets": [
+    {
+      "key": "tunnels_overview",
+      "label": {
+        "en": "Cloudflare tunnels",
+        "fr": "Tunnels Cloudflare",
+        "de": "Cloudflare-Tunnel",
+        "es": "Túneles de Cloudflare"
+      },
+      "description": {
+        "en": "Status and connections of every tunnel and local connector, with a check button.",
+        "fr": "État et connexions de chaque tunnel et connecteur local, avec un bouton de vérification.",
+        "de": "Status und Verbindungen aller Tunnel und lokalen Connectoren, mit Prüftaste.",
+        "es": "Estado y conexiones de cada túnel y conector local, con un botón de comprobación."
+      },
+      "icon": "cloud",
+      "action_timeout_seconds": 45
+    }
+  ]
+}
