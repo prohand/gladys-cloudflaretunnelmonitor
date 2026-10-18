@@ -8,8 +8,8 @@
     "de": "Überwache deine Cloudflare-Tunnel: Status, Verbindungen, Alarme und Szenen.",
     "es": "Supervise sus túneles de Cloudflare: estado, conexiones, alertas y escenas."
   },
-  "version": "0.0.0",
-  "docker_image": "ghcr.io/prohand/gladys-cloudflaretunnelmonitor:0.0.0",
+  "version": "0.0.1",
+  "docker_image": "ghcr.io/prohand/gladys-cloudflaretunnelmonitor:0.0.1",
   "gladys_version": ">=5.1.0",
   "cover_image": "https://raw.githubusercontent.com/prohand/gladys-cloudflaretunnelmonitor/main/cover.png",
   "categories": ["network", "security"],
@@ -178,7 +178,12 @@
           "key": "device",
           "type": "select",
           "source": "devices",
-          "label": { "en": "Tunnel", "fr": "Tunnel", "de": "Tunnel", "es": "Túnel" }
+          "label": {
+            "en": "Tunnel",
+            "fr": "Tunnel",
+            "de": "Tunnel",
+            "es": "Túnel"
+          }
         },
         {
           "key": "status",
@@ -192,7 +197,12 @@
           "options": [
             {
               "value": "healthy",
-              "label": { "en": "Healthy", "fr": "Sain", "de": "Fehlerfrei", "es": "Correcto" }
+              "label": {
+                "en": "Healthy",
+                "fr": "Sain",
+                "de": "Fehlerfrei",
+                "es": "Correcto"
+              }
             },
             {
               "value": "degraded",
@@ -205,11 +215,21 @@
             },
             {
               "value": "down",
-              "label": { "en": "Down", "fr": "Hors ligne", "de": "Ausgefallen", "es": "Caído" }
+              "label": {
+                "en": "Down",
+                "fr": "Hors ligne",
+                "de": "Ausgefallen",
+                "es": "Caído"
+              }
             },
             {
               "value": "inactive",
-              "label": { "en": "Inactive", "fr": "Inactif", "de": "Inaktiv", "es": "Inactivo" }
+              "label": {
+                "en": "Inactive",
+                "fr": "Inactif",
+                "de": "Inaktiv",
+                "es": "Inactivo"
+              }
             }
           ]
         }
@@ -276,7 +296,12 @@
           "key": "device",
           "type": "select",
           "source": "devices",
-          "label": { "en": "Connector", "fr": "Connecteur", "de": "Connector", "es": "Conector" }
+          "label": {
+            "en": "Connector",
+            "fr": "Connecteur",
+            "de": "Connector",
+            "es": "Conector"
+          }
         },
         {
           "key": "status",
@@ -290,7 +315,12 @@
           "options": [
             {
               "value": "ready",
-              "label": { "en": "Ready", "fr": "Prêt", "de": "Bereit", "es": "Listo" }
+              "label": {
+                "en": "Ready",
+                "fr": "Prêt",
+                "de": "Bereit",
+                "es": "Listo"
+              }
             },
             {
               "value": "not_ready",
@@ -374,7 +404,12 @@
         {
           "key": "reason",
           "type": "multi_select",
-          "label": { "en": "Reason", "fr": "Raison", "de": "Grund", "es": "Motivo" },
+          "label": {
+            "en": "Reason",
+            "fr": "Raison",
+            "de": "Grund",
+            "es": "Motivo"
+          },
           "options": [
             {
               "value": "auth",
@@ -437,7 +472,12 @@
         {
           "key": "reason",
           "type": "string",
-          "label": { "en": "Reason", "fr": "Raison", "de": "Grund", "es": "Motivo" }
+          "label": {
+            "en": "Reason",
+            "fr": "Raison",
+            "de": "Grund",
+            "es": "Motivo"
+          }
         },
         {
           "key": "message",
@@ -472,7 +512,12 @@
         {
           "key": "total",
           "type": "number",
-          "label": { "en": "Tunnels", "fr": "Tunnels", "de": "Tunnel", "es": "Túneles" }
+          "label": {
+            "en": "Tunnels",
+            "fr": "Tunnels",
+            "de": "Tunnel",
+            "es": "Túneles"
+          }
         },
         {
           "key": "healthy",
@@ -539,17 +584,32 @@
         {
           "key": "name",
           "type": "string",
-          "label": { "en": "Name", "fr": "Nom", "de": "Name", "es": "Nombre" }
+          "label": {
+            "en": "Name",
+            "fr": "Nom",
+            "de": "Name",
+            "es": "Nombre"
+          }
         },
         {
           "key": "status",
           "type": "string",
-          "label": { "en": "Status", "fr": "État", "de": "Status", "es": "Estado" }
+          "label": {
+            "en": "Status",
+            "fr": "État",
+            "de": "Status",
+            "es": "Estado"
+          }
         },
         {
           "key": "online",
           "type": "boolean",
-          "label": { "en": "Online", "fr": "En ligne", "de": "Online", "es": "En línea" }
+          "label": {
+            "en": "Online",
+            "fr": "En ligne",
+            "de": "Online",
+            "es": "En línea"
+          }
         },
         {
           "key": "connections",
