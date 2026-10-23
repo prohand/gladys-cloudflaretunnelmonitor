@@ -1,6 +1,6 @@
 {
   "name": "gladys-cloudflaretunnelmonitor",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "description": "Gladys Assistant external integration that monitors Cloudflare tunnels (Cloudflare API and local cloudflared connectors).",
   "type": "module",
