@@ -10,6 +10,18 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+### Added
+
+- Catalog search keywords (cloudflared, Zero Trust, Argo Tunnel, remote
+  access, self-hosted...) and the new "Servers" shelf of the Gladys catalog,
+  next to Network and Security.
+
+### Changed
+
+- Requires Gladys 5.3.0 or later (the catalog keywords are a Gladys 5.3
+  manifest field).
+- Gladys integration SDK 0.16.
+
 ## [0.0.2] - 2026-10-23
 
 - Maintenance release, no functional change.

@@ -18,6 +18,8 @@ and the SDK
 - English, French, German and Spanish everywhere (manifest, messages,
   widget, documentation).
 
+Requires **Gladys 5.3.0** or later.
+
 User documentation: [English](docs/en.md) · [Français](docs/fr.md) ·
 [Deutsch](docs/de.md) · [Español](docs/es.md).
 

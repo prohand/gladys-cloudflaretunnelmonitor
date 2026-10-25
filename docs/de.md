@@ -8,6 +8,8 @@ Dashboard-Widget zeigt alles auf einen Blick.
 
 Sie **liest** nur: Sie erstellt, ändert oder löscht nie einen Tunnel.
 
+Erfordert **Gladys 5.3.0** oder neuer.
+
 ## Zwei Quellen, nutze eine oder beide
 
 | Quelle    | Was du brauchst                                | Was du bekommst                                                   |

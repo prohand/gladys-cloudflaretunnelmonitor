@@ -9,6 +9,8 @@ widget de tableau de bord montre tout d'un coup d'œil.
 Elle ne fait que **lire** : elle ne crée, ne modifie et ne supprime jamais de
 tunnel.
 
+Nécessite **Gladys 5.3.0** ou plus récent.
+
 ## Deux sources, utilisez-en une ou les deux
 
 | Source    | Ce qu'il faut                                      | Ce que vous obtenez                                               |
