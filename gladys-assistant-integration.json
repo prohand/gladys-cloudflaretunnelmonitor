@@ -8,8 +8,8 @@
     "de": "Überwache deine Cloudflare-Tunnel: Status, Verbindungen, Alarme und Szenen.",
     "es": "Supervise sus túneles de Cloudflare: estado, conexiones, alertas y escenas."
   },
-  "version": "0.0.2",
-  "docker_image": "ghcr.io/prohand/gladys-cloudflaretunnelmonitor:0.0.2",
+  "version": "0.1.0",
+  "docker_image": "ghcr.io/prohand/gladys-cloudflaretunnelmonitor:0.1.0",
   "gladys_version": ">=5.3.0",
   "cover_image": "https://raw.githubusercontent.com/prohand/gladys-cloudflaretunnelmonitor/main/cover.png",
   "categories": ["network", "servers", "security"],
