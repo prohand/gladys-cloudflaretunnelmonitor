@@ -8,6 +8,8 @@ everything at a glance.
 
 It only **reads**: it never creates, changes or deletes a tunnel.
 
+Requires **Gladys 5.3.0** or later.
+
 ## Two sources, use one or both
 
 | Source    | What you need                                 | What you get                                                           |

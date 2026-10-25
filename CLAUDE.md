@@ -30,12 +30,13 @@ node --test --test-name-pattern "degraded"  # tests whose name matches
 npm run lint                                # eslint .
 npm run format:check                        # prettier --check . (CI gate)
 npm run format                              # prettier --write .
-npx github:GladysAssistant/integration-store .   # store admission checks
+npx github:GladysAssistant/integration-store --skip-image-check .   # store checks
 ```
 
 CI runs `format:check`, `lint`, `test` on Node 22 and 24; pull requests also
-run the store checks and build the image. Run the three commands before
-pushing.
+run the store checks (image skipped: the Release workflow re-runs them in full
+once the image is published) and build the image. Run the three commands
+before pushing.
 
 ## Architecture
 
@@ -98,8 +99,10 @@ test/helpers/fakeCloudflare.js  fake fetch: Cloudflare API + cloudflared metrics
 - **Manifest**: every text is a multi-language object with exactly `en`,
   `fr`, `de` and `es` (`label`, `description`, `placeholder` alike). The
   catalog `description` holds 10 to 100 characters per language. Scene and
-  widget fields need `gladys_version` `>=5.1.0`. `test/manifest.test.js` ties
-  the manifest to the code: change both sides together.
+  widget fields need `gladys_version` `>=5.1.0`, the catalog `keywords`
+  `>=5.3.0` (the floor today); no `countries`, the integration is worldwide.
+  `test/manifest.test.js` ties the manifest to the code: change both sides
+  together.
 - **User-facing text** is written in the four languages (built with
   `src/i18n.js`); user docs in `docs/en.md`, `docs/fr.md`, `docs/de.md` and
   `docs/es.md`, kept in sync.

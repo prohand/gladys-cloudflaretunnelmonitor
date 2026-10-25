@@ -8,6 +8,8 @@ widget del panel lo muestra todo de un vistazo.
 
 Solo **lee**: nunca crea, modifica ni elimina un túnel.
 
+Requiere **Gladys 5.3.0** o posterior.
+
 ## Dos fuentes, use una o las dos
 
 | Fuente    | Lo que necesita                                        | Lo que obtiene                                                       |
